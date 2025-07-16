@@ -43,13 +43,57 @@ class Cheque(models.Model):
     due_date = models.DateField()
 
     status = models.CharField(max_length=50, choices=STATUS_CHOICES)
-    responsible_person = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
-    other_responsible_name = models.CharField(max_length=100, blank=True)  # if not an employee
+
+    # Responsible person details (manual entry)
+    responsible_person_name = models.CharField(max_length=100, verbose_name="Responsible Person Name", default='')
+    responsible_person_project = models.ForeignKey(
+        Project,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='responsible_projects',
+        verbose_name="Responsible Person's Project"
+    )
+    responsible_person_contact = models.CharField(
+        max_length=15,
+        verbose_name="Responsible Person Contact",
+        blank=True,
+        null=True
+    )
+    responsible_person_cnic = models.CharField(
+        max_length=20,
+        verbose_name="Responsible Person CNIC",
+        blank=True,
+        null=True
+    )
+
+    # Received by person details (manual entry)
+    received_by_name = models.CharField(max_length=100, verbose_name="Received By Name", blank=True, null=True, default='')
+    received_by_project = models.ForeignKey(
+        Project,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='received_projects',
+        verbose_name="Received By Project"
+    )
+    received_by_contact = models.CharField(
+        max_length=15,
+        verbose_name="Received By Contact",
+        blank=True,
+        null=True
+    )
+    received_by_cnic = models.CharField(
+        max_length=20,
+        verbose_name="Received By CNIC",
+        blank=True,
+        null=True
+    )
+
     approved_by = models.CharField(max_length=100, choices=APPROVED_BY_CHOICES)
     payment_mode = models.CharField(max_length=10, choices=PAYMENT_CHOICES)
     cheque_date = models.DateField()
 
-    received_by = models.CharField(max_length=100, blank=True)
     bill_available = models.BooleanField(default=False)
     shared_on_group = models.BooleanField(default=False)
     bill_attachment = models.FileField(upload_to='bills/', blank=True, null=True)
