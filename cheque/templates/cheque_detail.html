@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+  <div class="cheque-detail-card">
+    <!-- Header Section -->
+    <div class="cheque-header">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h2 class="cheque-title">{{ cheque.description }}</h2>
+          <div class="cheque-meta">
+            <span class="badge status-badge {{ cheque.status }}">
+              {{ cheque.get_status_display }}
+            </span>
+            <span class="cheque-number">#{{ cheque.cheque_number }}</span>
+          </div>
+        </div>
+        <div class="amount-display">
+          Rs. {{ cheque.amount }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="cheque-body">
+      <div class="row">
+        <!-- Left Column -->
+        <div class="col-md-6">
+          <div class="detail-item">
+            <i class="fas fa-project-diagram"></i>
+            <div>
+              <span class="detail-label">Project</span>
+              <span class="detail-value">{{ cheque.project.name }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-user-tie"></i>
+            <div>
+              <span class="detail-label">Responsible Person</span>
+              <span class="detail-value">{{ cheque.responsible_person }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-user-check"></i>
+            <div>
+              <span class="detail-label">Approved By</span>
+              <span class="detail-value">{{ cheque.approved_by }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-calendar-day"></i>
+            <div>
+              <span class="detail-label">Cheque Date</span>
+              <span class="detail-value">{{ cheque.cheque_date }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <span class="detail-label">Due Date</span>
+              <span class="detail-value">{{ cheque.due_date }}</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="col-md-6">
+          <div class="detail-item">
+            <i class="fas fa-money-bill-wave"></i>
+            <div>
+              <span class="detail-label">Payment Mode</span>
+              <span class="detail-value">{{ cheque.get_payment_mode_display }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-sticky-note"></i>
+            <div>
+              <span class="detail-label">Notes</span>
+              <span class="detail-value">{{ cheque.notes|default:'-' }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-user-circle"></i>
+            <div>
+              <span class="detail-label">Received By</span>
+              <span class="detail-value">{{ cheque.received_by|default:'-' }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-receipt"></i>
+            <div>
+              <span class="detail-label">Bill Available</span>
+              <span class="detail-value">{{ cheque.bill_available|yesno:"Yes,No" }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-item">
+            <i class="fas fa-users"></i>
+            <div>
+              <span class="detail-label">Shared on Group</span>
+              <span class="detail-value">{{ cheque.shared_on_group|yesno:"Yes,No" }}</span>
+            </div>
+          </div>
+          
+          {% if cheque.bill_attachment %}
+          <div class="detail-item">
+            <i class="fas fa-paperclip"></i>
+            <div>
+              <span class="detail-label">Bill Attachment</span>
+              <a href="{{ cheque.bill_attachment.url }}" target="_blank" class="attachment-link">
+                View Document <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+    <!-- Footer Section -->
+    <div class="cheque-footer">
+      <div class="created-at">
+        <i class="fas fa-calendar-plus"></i> Created on {{ cheque.created_at }}
+      </div>
+      <a href="/" class="btn btn-back">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --primary: #5e35b1;
+    --primary-light: #7e57c2;
+    --secondary: #26a69a;
+    --accent: #ff7043;
+    --dark: #263238;
+    --light: #eceff1;
+    --success: #66bb6a;
+    --warning: #ffa726;
+    --danger: #ef5350;
+    --card-bg: #ffffff;
+  }
+  
+  .cheque-detail-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+    overflow: hidden;
+  }
+  
+  .cheque-header {
+    padding: 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background: linear-gradient(135deg, rgba(94, 53, 177, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+  }
+  
+  .cheque-title {
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+  }
+  
+  .cheque-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35rem 0.8rem;
+    border-radius: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+  }
+  
+  .status-badge.completed {
+    background: rgba(102, 187, 106, 0.15);
+    color: var(--success);
+  }
+  
+  .status-badge.in_progress {
+    background: rgba(255, 167, 38, 0.15);
+    color: var(--warning);
+  }
+  
+  .status-badge.blocked {
+    background: rgba(239, 83, 80, 0.15);
+    color: var(--danger);
+  }
+  
+  .status-badge.not_started {
+    background: rgba(236, 239, 241, 0.5);
+    color: var(--dark);
+  }
+  
+  .cheque-number {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+  
+  .amount-display {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .cheque-body {
+    padding: 2rem;
+  }
+  
+  .detail-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+    align-items: flex-start;
+  }
+  
+  .detail-item i {
+    color: var(--primary-light);
+    font-size: 1.1rem;
+    margin-top: 0.2rem;
+  }
+  
+  .detail-label {
+    display: block;
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.2rem;
+  }
+  
+  .detail-value {
+    display: block;
+    font-weight: 500;
+    color: var(--dark);
+  }
+  
+  .attachment-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  .attachment-link:hover {
+    color: var(--primary-light);
+    text-decoration: underline;
+  }
+  
+  .cheque-footer {
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    background: rgba(0,0,0,0.01);
+  }
+  
+  .created-at {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+  
+  .created-at i {
+    color: var(--primary-light);
+    margin-right: 0.5rem;
+  }
+  
+  .btn-back {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 12px;
+    color: var(--dark);
+    font-weight: 500;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-back:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  
+  @media (max-width: 768px) {
+    .cheque-header, .cheque-body {
+      padding: 1.5rem;
+    }
+    
+    .amount-display {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+    }
+  }
+</style>
+{% endblock %}
